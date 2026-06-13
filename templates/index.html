@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>DIAMOND PUBLIC SCHOOL</title>
         <link rel="icon" type="image/png" href="{{url_for('static',filename='images/SYMBOLS.png')}}">
         <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <style>
             fieldset{text-align: center;}
         </style>
@@ -29,7 +31,7 @@
             ENTER PASSWORD <label>*</label>
             <input type="password" id="nor_input" name="PWD" placeholder="ENTER YOUR PASSWORD">
         </form>
-        <button onclick="run()" type="submit" id="nor_btn">SUMBIT</button>
+        <button onclick="run()" type="submit" id="nor_btn"><b>LOGIN <i class="fa fa-sign-in"></i></b></button>
         </fieldset>
 <script>
 document.addEventListener("DOMContentLoaded", function() {

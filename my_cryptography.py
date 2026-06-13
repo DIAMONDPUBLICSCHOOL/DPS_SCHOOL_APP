@@ -6,7 +6,7 @@ def log_pin_decypt(PWD):
 def log_pin_encrypt(PWD):
     return Fernet(b'JxFCiezevkVZNmHWTFRztjSg8lREGJY5HGqtMar1Rq4=').encrypt(PWD.encode()).decode()
 def admin_log_pass():
-    return 'gAAAAABqLWceZUHHlvqBKqDWnt1XKjkgkcenQ7izVQ1smPQfsqTPO08TSPlLX9DDX7WkvhOhLFOl1Tr7px_5g0vTNjUKGFpSHg=='
+    return os.environ.get('ADMIN_PASSWORD')
 
 
 

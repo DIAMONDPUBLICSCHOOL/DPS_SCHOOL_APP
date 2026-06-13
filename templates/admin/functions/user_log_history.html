@@ -33,41 +33,6 @@
             {{code|safe}}
         </fieldset>
     </fieldset>
-    <!-- <fieldset>
-        <legend>TRACK IP ADDRESS</legend>
-        <input type="text" id="ipInput" placeholder="Enter IP address (e.g., 8.8.8.8)">
-        <button onclick="getLocation()">GET LOCATION</button>
-    <div id="result"></div>
-    <script>
-        async function getLocation() {
-            const ip = document.getElementById("ipInput").value.trim();
-            const resultDiv = document.getElementById("result");
-            const ipPattern = /^(?:\d{1,3}\.){3}\d{1,3}$/;
-            if (!ipPattern.test(ip)) {
-                resultDiv.innerHTML = "❌ Please enter a valid IPv4 address.";
-                return;
-            }
-            try {
-                resultDiv.innerHTML = "Fetching location...";
-                const response = await fetch(`https://ipapi.co/${ip}/json/`);
-                if (!response.ok) throw new Error("Failed to fetch location data");
-                const data = await response.json();
-                if (data.error) {
-                    resultDiv.innerHTML = `❌ Error: ${data.reason || "Invalid IP"}`;
-                    return;
-                }
-                resultDiv.innerHTML = `
-                    <strong>IP Address:</strong> ${data.ip} <br>
-                    <strong>City:</strong> ${data.city} <br>
-                    <strong>Region:</strong> ${data.region} <br>
-                    <strong>Country:</strong> ${data.country_name} <br>
-                    <strong>Latitude:</strong> ${data.latitude} <br>
-                    <strong>Longitude:</strong> ${data.longitude}
-                `;} 
-                catch (error) {
-                resultDiv.innerHTML = "❌ Error: " + error.message;
-            }}</script>
-    </fieldset> -->
     <ul id="nav"><li>COPYRIGHT&copy; 2026 <code>ALL RIGHTS RESERVED.</code></li></ul>
 </body>
 </html>

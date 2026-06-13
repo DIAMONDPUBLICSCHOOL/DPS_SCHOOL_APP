@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <title>DIAMOND PUBLIC SCHOOL</title>
+        <link rel="icon" type="image/png" href="{{url_for('static',filename='images/SYMBOLS.png')}}">
+        <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+        <style type="text/css">
+            #copy{float: right;margin: 5px 5px;color: blue;}
+        </style>
+    </head>
+    <body>
+<ul id="nav">
+    <li><a href="dashboard"><i class="fa fa-home"></i></a></li>
+    <img src="static/images/SYMBOLS.png" alt="SYMBOL">
+    <li>DIAMOND PUBLIC SCHOOL</li>
+  </ul>
+  <div id="user_info"><img src="{{url_for('static',filename='images/user.png')}}" alt="USER"><br><b>USER:- <font>ADMIN</font></b><br><a href="{{url_for('logout')}}"><button id="log">LOGOUT <i class="fa fa-sign-out"></i></button></a></div>
+        <fieldset>
+            <fieldset>
+                <legend><b>SERVICES</b></legend>
+                <a href="{{url_for('add_student')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-user"></i></b><br><br>ADD STUDENT</button></a>
+                <a href="{{url_for('add_teacher')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-user"></i></b><br><br>ADD TEACHER</button></a>
+                <a href="{{url_for('student_manual')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-user-circle-o"></i></b><br><br>EDIT STUDENT DATA</button></a>
+                <a href="{{url_for('teacher_manual')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-user-circle-o"></i></b><br><br>EDIT TEACHER DATA</button></a>
+                <a href="{{url_for('change_pwd')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-key"></i></b><br><br>CHANGE PASSWORD</button></a>
+            </fieldset>
+            <fieldset>
+                <legend><b>APP SERVICES</b></legend>
+                <a href="{{url_for('online_class_manager')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-tv"></i> / <i class="fa fa-calendar"></i></b><br><br>MANUPULATE ONLINE CLASSES & UPDATE TIME TABLE</button></a>
+                <a href="{{url_for('noti_load')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-bell"></i></b><br><br>SEND NOTIFICATION</button></a>
+                <a href="{{url_for('report_card')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-envelope-o"></i></b><br><br>VIEW REPORT CARD DATA</button></a>
+                <a href="{{url_for('admin_video_sender')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-address-card-o"></i></b><br><br>UPLOAD VIDEOES</button></a>
+            </fieldset>
+            <fieldset>
+                <legend><b>RETRIVER</b></legend>
+                <a href="{{url_for('fees_slip')}}"><button id="dash_btn" ><b id="btn"><i class="fa fa-list"></i></b><br><br>FEES SLIP</button></a>
+                <a href="{{url_for('export_data')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-user-circle"></i></b><br><br>EXPORT DATA</button></a>
+                <a href="{{url_for('complains')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-info"></i></b><br><br>COMPLAINS</button></a>
+            </fieldset>
+            <fieldset>
+                <legend><b>SPECIAL FUNCTIONS</b></legend>
+                <a href="{{url_for('block_user')}}"><button id="dash_btn"><b id="btn"><i class="bi bi-person-x-fill"></i></b><br><br>BLOCK USER</button></a>
+                <a href="{{url_for('special_log_function')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-envelope"></i></b><br><br>SPECIAL LOG [WITH DIFFERENT SESSIONS]</button></a>
+                <a href="{{url_for('user_log_history')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-sign-in"></i></b><br><br>VIEW USER LOG HISTORY</button></a>
+                <a href="{{url_for('sync_db_new_session')}}"><button id="dash_btn"><b id="btn">&#x21BB;<br></b>SYNC DATABASE [NEXT SESSION]</button></a>
+            </fieldset>
+        </fieldset><ul id="nav">
+        <button style="margin: 10px 10px;" onclick="alert('FOR THIS YOU HAVE FERNET KEY OF CRYPTOGRAPHY TO DECRYPT ENCRYPTED SOURCE CODE DATA [THESE ARE ONLY STORED IN MAIN SERVER (COOKIES)].')">EXPORT FULL SOURCE CODE<b> <  ></b></button>
+        <li>COPYRIGHT&copy; 2026 <code>ALL RIGHTS RESERVED.</code></li></ul>
+    </body>
+</html>

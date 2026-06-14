@@ -18,7 +18,6 @@
     <li>DIAMOND PUBLIC SCHOOL</li>
   </ul>
   <div id="user_info"><img src="{{url_for('static',filename='images/user.png')}}" alt="USER"><br><b>USER:- <font>ADMIN</font></b><br><a href="{{url_for('logout')}}"><button id="log">LOGOUT <i class="fa fa-sign-out"></i></button></a></div>
-        <fieldset>
             <fieldset>
                 <legend><b>SERVICES</b></legend>
                 <a href="{{url_for('add_student')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-user"></i></b><br><br>ADD STUDENT</button></a>
@@ -47,7 +46,7 @@
                 <a href="{{url_for('user_log_history')}}"><button id="dash_btn"><b id="btn"><i class="fa fa-sign-in"></i></b><br><br>VIEW USER LOG HISTORY</button></a>
                 <a href="{{url_for('sync_db_new_session')}}"><button id="dash_btn"><b id="btn">&#x21BB;<br></b>SYNC DATABASE [NEXT SESSION]</button></a>
             </fieldset>
-        </fieldset><ul id="nav">
+        <ul id="nav">
         <button style="margin: 10px 10px;" onclick="alert('FOR THIS YOU HAVE FERNET KEY OF CRYPTOGRAPHY TO DECRYPT ENCRYPTED SOURCE CODE DATA [THESE ARE ONLY STORED IN MAIN SERVER (COOKIES)].')">EXPORT FULL SOURCE CODE<b> <  ></b></button>
         <li>COPYRIGHT&copy; 2026 <code>ALL RIGHTS RESERVED.</code></li></ul>
     </body>

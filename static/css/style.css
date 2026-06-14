@@ -29,8 +29,8 @@ body {margin: 0;padding: 0;}
 div#user_info{text-align: center;font-weight: bold;margin:10px 10px;padding:12px 20px;}
 div#user_info img{border: 1px solid green;border-radius: 50%;width: 200px;height: 200px;}
 div#user_info font{color: red;}
-div#user_info #comp{border: 1px solid black;color: white;background: red;margin:5px 5px;padding:6px 6px;width:30%;}
-div#user_info #log{border: 1px solid black;color: white;background: rgb(55, 55, 185);margin:5px 5px;padding:6px 6px;width:30%;}
-div#user_info #pwd{border: 1px solid black;color: black;background: rgb(0, 255, 94);margin:5px 5px;padding:6px 6px;width:30%;}
+div#user_info #comp{border: 1px solid black;color: white;background: red;margin:5px 5px;padding:6px 6px;width:30%;height:10px;}
+div#user_info #log{border: 1px solid black;color: white;background: rgb(55, 55, 185);margin:5px 5px;padding:6px 6px;width:30%;height:10px;}
+div#user_info #pwd{border: 1px solid black;color: black;background: rgb(0, 255, 94);margin:5px 5px;padding:6px 6px;width:30%;height:10px;}
 div#TEST_CONTENT{color: black;border: 2px solid red;background:rgb(141, 246, 149);margin:10px 10px;padding:12px 20px;border-radius: 5px;}
 textarea{resize: none;}

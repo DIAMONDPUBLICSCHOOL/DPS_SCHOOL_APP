@@ -253,13 +253,14 @@ class Data_sync(Functions):
                     cursor.execute('DELETE FROM STUDENT_DATA WHERE Adm_ID = ?',(int(item),))
                     cursor.execute('DELETE FROM LOG_HISTORY WHERE USER_ID = ? AND USER_TYPE = "STUDENT"',(int(item),))
                     cursor.execute('DELETE FROM EXAM_DATA WHERE Adm_ID = ?',(int(item),))
+                    cursor.execute('DELETE FROM SINGLE_LOG WHERE USER_TYPE = ? AND USER_ID = ?',('STUDENT',int(item)))
                     cursor.execute('DELETE FROM BLOCK_USER WHERE USER_ID = ? AND USER_TYPE = "STUDENT";',(int(item),))
                 else:
                     pass
             data_sync_dic[str(d)[:4]]["STATUS"]["CLASSES"]="PASS"
-            conn.commit()
         except:
             data_sync_dic[str(d)[:4]]["STATUS"]["CLASSES"]="FAILED"
+        conn.commit()
 
         ###data reset
         try:
@@ -269,9 +270,9 @@ class Data_sync(Functions):
             cursor.execute('DELETE FROM TEST_DATA;')
             cursor.execute('DELETE FROM HW_DATA;')
             data_sync_dic[str(d)[:4]]["STATUS"]["DATA_RESET"]="PASS"
-            conn.commit()
         except:
             data_sync_dic[str(d)[:4]]["STATUS"]["DATA_RESET"]="FAILED"
+        conn.commit()
 
         ###fees data
         try:
@@ -285,9 +286,9 @@ class Data_sync(Functions):
                     fees = rest_fees[0] + Data().class_fees(st_class)
                     cursor.execute('INSERT INTO FEES_DATA VALUES(?,?,?,?,?)',(0,item[0],0,fees,fees_session+1))
             data_sync_dic[str(d)[:4]]["STATUS"]["FEES"]="PASS"
-            conn.commit()
         except:
             data_sync_dic[str(d)[:4]]["STATUS"]["FEES"]="FAILED"
+        conn.commit()
         self.data_base_function(conn)
 
         ###last step

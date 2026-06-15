@@ -14,6 +14,12 @@ def log_check():
     if "user_id" not in session or "role" not in session or"name" not in session or 'ip' not in session:
         return False
     else:
+        conn,cursor = funt.Functions().data_base_function()
+        cursor.execute('SELECT SECRET_KEY WHERE USER_TYPE = ? AND USER_ID = ?',(session['role'],session['user_id']))
+        user_secret_key = int(cursor.fetchone()[0])
+        funt.Functions().data_base_function(conn)
+        if user_secret_key != int(session['secret_key']):
+            return redirect(url_for('logout'))
         return True
    
 @app.route("/", methods=["GET","POST"])
@@ -33,10 +39,13 @@ def welcome_page():
             else:
                 row = ('ADMIN',)
             ip = request.form.get('ip_address')
+            user_secret_key = int(random.randint(10000,99999))
             session["user_id"] = U_N
             session["role"] = log_type
             session["name"] = row
             session['ip'] = ip
+            session['secret_key'] = user_secret_key
+            cursor.execute('UPDATE INTO SINGLE_LOG WHERE USER_TYPE = ? AND USER_ID = ? SET SECRET_KEY = ?',(log_type,U_N,user_secret_key))
             if session['role'] != 'ADMIN':
                 cursor.execute('SELECT HISTORY FROM LOG_HISTORY WHERE USER_ID = ? AND USER_TYPE = ?',(U_N,log_type))
                 his = cursor.fetchone()[0]
@@ -257,17 +266,20 @@ def testpaper():
 
 @app.route('/class_tests/testpaper/test_submittion',methods=["POST","GET"])
 def test_submittion():
-    conn,cursor = funt.Data().data_base_function()
-    test_id = request.form.get('test_id')
-    li = request.form.to_dict(flat=True)
-    li.pop('test_id')
-    ans = ''
-    for ques,item in li.items():
-        ans+=f'{ques.replace('ans?=','').replace('?next?=/','').strip()}ans?={item.replace('ans?=','').replace('?next?=/','').strip()}?next?=/'
-    ans = ans[:-8]
-    cursor.execute('INSERT INTO STUDENT_TEST_DATA VALUES(?,?,?,?)',(test_id,int(session['user_id']),ans,''))
-    funt.Data().data_base_function(conn)
-    return render_template('confirmation.html')
+    if log_check():
+        conn,cursor = funt.Data().data_base_function()
+        test_id = request.form.get('test_id')
+        li = request.form.to_dict(flat=True)
+        li.pop('test_id')
+        ans = ''
+        for ques,item in li.items():
+            ans+=f'{ques.replace('ans?=','').replace('?next?=/','').strip()}ans?={item.replace('ans?=','').replace('?next?=/','').strip()}?next?=/'
+        ans = ans[:-8]
+        cursor.execute('INSERT INTO STUDENT_TEST_DATA VALUES(?,?,?,?)',(test_id,int(session['user_id']),ans,''))
+        funt.Data().data_base_function(conn)
+        return render_template('confirmation.html')
+    else:
+        return redirect(url_for('welcome_page'))
 
 #TEACHER
 @app.route('/test_generator',methods=["GET"])
@@ -389,7 +401,10 @@ def st_attendance_teacher():
 
 @app.route('/online_classes_teacher',methods=["GET","POST"])
 def online_classes_teacher():
-    return render_template('teacher/functions/online_classes.html',code=cc.Online_classes().table_code(teacher_entity=True))
+    if log_check():
+        return render_template('teacher/functions/online_classes.html',code=cc.Online_classes().table_code(teacher_entity=True))
+    else:
+        return redirect(url_for('welcome_page'))
 
 #ADMIN
 
@@ -476,6 +491,7 @@ def add_student():
             cursor.execute('INSERT INTO EXAM_DATA VALUES(?,?,?)',(ST_ID,val,val))
             d,t = funt.Functions().get_date_time()
             cursor.execute('INSERT INTO LOG_HISTORY VALUES(?,?,?)',(ST_ID,'STUDENT',f'CREATED,{d},{t}'))
+            cursor.execute('INSERT INTO SINGLE_LOG VALUES(?,?,?)',('STUDENT',ST_ID,0))
             funt.Data().data_base_function(conn)
             return render_template('confirmation.html')
         return render_template('admin/functions/add_st.html')
@@ -514,6 +530,7 @@ def add_teacher():
             cursor.execute('INSERT INTO PASSWORDS(LOG_TYPE,USER_ID,PASSWORD) VALUES(?,?,?);',("TEACHER",T_ID_,T_PWD))
             d,t = funt.Functions().get_date_time()
             cursor.execute('INSERT INTO LOG_HISTORY VALUES(?,?,?)',(T_ID_,'TEACHER',f'CREATED,{d},{t}'))
+            cursor.execute('INSERT INTO SINGLE_LOG VALUES(?,?,?)',('TEACHER',T_ID_,0))
             funt.Data().data_base_function(conn)
             return render_template('confirmation.html')
         return render_template('admin/functions/add_t.html')
@@ -542,6 +559,7 @@ def student_manual():
                 cursor.execute('DELETE FROM PASSWORDS WHERE LOG_TYPE = "STUDENT" AND USER_ID = ?',(dest_id,))
                 cursor.execute('DELETE FROM BLOCK_USER WHERE USER_ID = ? AND USER_TYPE = "STUDENT";',(dest_id,))
                 cursor.execute('DELETE FROM EXAM_DATA WHERE Adm_ID = ?',(st_id,))
+                cursor.execute('DELETE FROM SINGLE_LOG WHERE USER_TYPE = ? AND USER_ID = ?',('STUDENT',st_id))
 
             funt.Data().data_base_function(conn)
         return render_template('admin/functions/st_del.html',code=cc.Details_Page().students())
@@ -569,6 +587,7 @@ def teacher_manual():
                 cursor.execute('DELETE FROM TEACHER_DATA WHERE ID = ?',(det_id,))
                 cursor.execute('DELETE FROM PASSWORDS WHERE LOG_TYPE = "TEACHER" AND USER_ID = ?',(det_id,))
                 cursor.execute('DELETE FROM BLOCK_USER WHERE USER_ID = ? AND USER_TYPE = "TEACHER";',(det_id,))
+                cursor.execute('DELETE FROM SINGLE_LOG WHERE USER_TYPE = ? AND USER_ID = ?',('TEACHER',det_id))
 
             funt.Data().data_base_function(conn)
         return render_template('admin/functions/t_del.html',code=cc.Details_Page().teachers())
@@ -770,18 +789,21 @@ def special_log_function():
 
 @app.route('/sync_db_new_session',methods=["GET","POST"])
 def sync_db_new_session():
-    if request.method == "POST":
-        return render_template('admin/functions/sync_db_new_session.html',code=funt.Data_sync().data_sync(request.form.to_dict(flat=True)))
-    d,_ = funt.Functions().get_date_time()
-    my_date = str(d).strip()[:-3]
-    with open('datasync.json','r') as f:
-        data_sync = json.load(f)
-    if str(funt.Functions().date_show_mon(int(my_date[:4]))) not in data_sync:
-        if my_date[5:] == '04' or my_date[5:] == '05':
-            return render_template('admin/functions/sync_db_new_session.html',code=cc.Data_Sync().data_sync())
-        else:
-            return render_template('admin/functions/sync_db_new_session.html',code='<h2>DATABASE SYNC PERIOD IS EXPIRED.</h2>')
-    return render_template('admin/functions/sync_db_new_session.html',code=funt.Data_sync().data_sync_status_funt())
+    if log_check():    
+        if request.method == "POST":
+            return render_template('admin/functions/sync_db_new_session.html',code=funt.Data_sync().data_sync(request.form.to_dict(flat=True)))
+        d,_ = funt.Functions().get_date_time()
+        my_date = str(d).strip()[:-3]
+        with open('datasync.json','r') as f:
+            data_sync = json.load(f)
+        if str(funt.Functions().date_show_mon(int(my_date[:4]))) not in data_sync:
+            if my_date[5:] == '04' or my_date[5:] == '05':
+                return render_template('admin/functions/sync_db_new_session.html',code=cc.Data_Sync().data_sync())
+            else:
+                return render_template('admin/functions/sync_db_new_session.html',code='<h2>DATABASE SYNC PERIOD IS EXPIRED.</h2>')
+        return render_template('admin/functions/sync_db_new_session.html',code=funt.Data_sync().data_sync_status_funt())
+    else:
+        return redirect(url_for('welcome_page'))
 
 if __name__== "__main__":
     app.run(debug=False)

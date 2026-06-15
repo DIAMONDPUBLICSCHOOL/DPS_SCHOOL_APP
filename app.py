@@ -6,20 +6,21 @@ import functions as funt
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY')
 
-# @app.errorhandler(Exception)
-# def handle_all_errors(e):
-#    return render_template('error.html')
+@app.errorhandler(Exception)
+def handle_all_errors(e):
+   return render_template('error.html')
 
 def log_check():
     if "user_id" not in session or "role" not in session or"name" not in session or 'ip' not in session:
         return False
     else:
-        conn,cursor = funt.Functions().data_base_function()
-        cursor.execute('SELECT SECRET_KEY WHERE USER_TYPE = ? AND USER_ID = ?',(session['role'],session['user_id']))
-        user_secret_key = int(cursor.fetchone()[0])
-        funt.Functions().data_base_function(conn)
-        if user_secret_key != int(session['secret_key']):
-            return redirect(url_for('logout'))
+        if session['role'] != 'ADMIN':
+            conn,cursor = funt.Functions().data_base_function()
+            cursor.execute('SELECT SECRET_ID FROM SINGLE_LOG WHERE USER_TYPE = ? AND USER_ID = ?',(session['role'],session['user_id']))
+            user_secret_id = int(cursor.fetchone()[0])
+            funt.Functions().data_base_function(conn)
+            if user_secret_id != int(session['secret_id']):
+                return redirect(url_for('logout'))
         return True
    
 @app.route("/", methods=["GET","POST"])
@@ -39,14 +40,14 @@ def welcome_page():
             else:
                 row = ('ADMIN',)
             ip = request.form.get('ip_address')
-            user_secret_key = int(random.randint(10000,99999))
+            user_secret_id = int(random.randint(10000,99999))
             session["user_id"] = U_N
             session["role"] = log_type
             session["name"] = row
             session['ip'] = ip
-            session['secret_key'] = user_secret_key
-            cursor.execute('UPDATE INTO SINGLE_LOG WHERE USER_TYPE = ? AND USER_ID = ? SET SECRET_KEY = ?',(log_type,U_N,user_secret_key))
+            session['secret_id'] = user_secret_id
             if session['role'] != 'ADMIN':
+                cursor.execute('UPDATE SINGLE_LOG WHERE USER_TYPE = ? AND USER_ID = ? SET SECRET_ID = ?',(log_type,U_N,user_secret_id))
                 cursor.execute('SELECT HISTORY FROM LOG_HISTORY WHERE USER_ID = ? AND USER_TYPE = ?',(U_N,log_type))
                 his = cursor.fetchone()[0]
                 d,t = funt.Functions().get_date_time()
@@ -806,5 +807,5 @@ def sync_db_new_session():
         return redirect(url_for('welcome_page'))
 
 if __name__== "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
 

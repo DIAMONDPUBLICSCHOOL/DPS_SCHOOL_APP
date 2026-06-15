@@ -2,11 +2,11 @@ from cryptography.fernet import Fernet
 import os
 
 def log_pin_decypt(PWD):
-    return Fernet(bytes(os.environ.get('LOGIN_PIN'))).decrypt(PWD).decode()
+    return Fernet(b'JxFCiezevkVZNmHWTFRztjSg8lREGJY5HGqtMar1Rq4=').decrypt(PWD.encode()).decode()
 def log_pin_encrypt(PWD):
-    return Fernet(bytes(os.environ.get('LOGIN_PIN'))).encrypt(PWD.encode()).decode()
+    return Fernet(b'JxFCiezevkVZNmHWTFRztjSg8lREGJY5HGqtMar1Rq4=').encrypt(PWD.encode()).decode()
 def admin_log_pass():
-    return os.environ.get('ADMIN_PASSWORD')
+    return 'gAAAAABqLWceZUHHlvqBKqDWnt1XKjkgkcenQ7izVQ1smPQfsqTPO08TSPlLX9DDX7WkvhOhLFOl1Tr7px_5g0vTNjUKGFpSHg=='
 
 
 

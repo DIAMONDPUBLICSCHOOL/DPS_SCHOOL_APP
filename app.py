@@ -6,9 +6,9 @@ import functions as funt
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY')
 
-@app.errorhandler(Exception)
-def handle_all_errors(e):
-   return render_template('error.html')
+# @app.errorhandler(Exception)
+# def handle_all_errors(e):
+#    return render_template('error.html')
 
 def log_check():
     if "user_id" not in session or "role" not in session or"name" not in session or 'ip' not in session:
@@ -47,7 +47,7 @@ def welcome_page():
             session['ip'] = ip
             session['secret_id'] = user_secret_id
             if session['role'] != 'ADMIN':
-                cursor.execute('UPDATE SINGLE_LOG WHERE USER_TYPE = ? AND USER_ID = ? SET SECRET_ID = ?',(log_type,U_N,user_secret_id))
+                cursor.execute('UPDATE SINGLE_LOG SET SECRET_ID = ? WHERE USER_TYPE = ? AND USER_ID = ?',(user_secret_id,log_type,U_N))
                 cursor.execute('SELECT HISTORY FROM LOG_HISTORY WHERE USER_ID = ? AND USER_TYPE = ?',(U_N,log_type))
                 his = cursor.fetchone()[0]
                 d,t = funt.Functions().get_date_time()
@@ -807,5 +807,5 @@ def sync_db_new_session():
         return redirect(url_for('welcome_page'))
 
 if __name__== "__main__":
-    app.run(debug=False)
+    app.run(debug=True)
 

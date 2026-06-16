@@ -329,7 +329,10 @@ class Online_classes(content_creator):
                 t_name = '[UNDEFINED]'
             return t_name
         cursor.execute(f'SELECT {day.upper()} FROM ONLINE_CLASSES_DATA WHERE CLASS = ?',(st_class,))
-        data = cursor.fetchone()[0].split(';')
+        in_data = cursor.fetchone()
+        if in_data is None:
+            return '<h2>CLASSES NOT SCHEDULED.</h2>'
+        data = in_data[0].split(';')
         for i in range(len(time)):
             d1,d2,d3 = tuple(data[i].split(','))
             if d1 and d3:
@@ -373,11 +376,13 @@ class Online_classes(content_creator):
             li = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY']
             for day in li:
                 cursor.execute(f'SELECT {day} FROM ONLINE_CLASSES_DATA WHERE CLASS = ?;',(st_class,))
-                data = cursor.fetchone()[0].split(';')
                 html_text += f'<tr><th style="color:blue;">{day}</th>'
-                for i in range(len(data)):
-                    d1,d2,_ = tuple(data[i].split(','))
-                    html_text += f'<th><b><font color="green">SUBJECT  :- </font><br>{d1}<br><font color="green">TEACHER  :- </font><br>{teach_name(d2)}</b></th>'
+                in_data = cursor.fetchone()
+                if in_data is not None:
+                    data = in_data[0].split(';')
+                    for i in range(len(data)):
+                        d1,d2,_ = tuple(data[i].split(','))
+                        html_text += f'<th><b><font color="green">SUBJECT  :- </font><br>{d1}<br><font color="green">TEACHER  :- </font><br>{teach_name(d2)}</b></th>'
                 html_text += "</tr>"
         html_text += '</table>'
         funt.Data().data_base_function(conn)

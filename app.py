@@ -414,7 +414,7 @@ def noti_sender():
         if request.method == "POST":
             d,t = funt.Functions().get_date_time()
             conn,cursor = funt.Functions().data_base_function()
-            capt = request.form.get('noti').upper()
+            capt = request.form.get('noti').strip().replace('<---ENTER--->','<br>').upper()
             cursor.execute('INSERT INTO MEDIA_DATA(MEDIA_TYPE,DATE,TIME,CAPTION) VALUES(?,?,?,?)',('NOTIFICATION',d,str(t).strip()[:-3],capt))
             funt.Functions().data_base_function(conn)
             return render_template('confirmation.html')
@@ -426,21 +426,16 @@ def noti_sender():
 def admin_video_sender():
     if log_check():
         if request.method == "POST":
-            # i = 1
-            # while True:
-            #     if not os.path.exists(f'static/videos/video{i}.mp4'):
-            #         break
-            #     i += 1
-            # path = f"static/videos/video{i}.mp4"
-            # video_ = request.files['video']
-            # video_.save(path)
-            # vid_data = cc.Videos_Sender().vid_code(path,request.form.get('video_caption'),request.form.get('video_date'),request.form.get('video_time'))
-            # with open('Templates/videos.html','w') as f:
-            #     f.write(vid_data)
-            
             conn,cursor = funt.Functions().data_base_function()
-            video_ = request.files['video']
             capt = request.form.get('caption')
+            video_ = request.files['video']
+            if video_.content_type != 'video/mp4':
+                return render_template('admin/functions/videos_sender.html',status='FILE IS NOT IN MP4!!!',caption=capt)
+            video_.seek(0,2)
+            size = video_.tell()
+            video_.seek(0)
+            if size > 1024 * 1024 * 10: #10MB
+                return render_template('admin/functions/videos_sender.html',status='FILE IS LARGER THAN 10MB!!!',caption=capt)
             d,t = funt.Functions().get_date_time()
             cursor.execute('INSERT INTO MEDIA_DATA VALUES(?,?,?,?,?)',('VIDEO',d,str(t).strip()[:-3],capt,video_))
             funt.Functions().data_base_function(conn)

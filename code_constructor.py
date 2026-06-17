@@ -203,7 +203,9 @@ class Notifications(content_creator):
         html_text = ''
         conn,cursor = funt.Functions().data_base_function()
         cursor.execute('SELECT DATE,TIME,CAPTION FROM MEDIA_DATA WHERE MEDIA_TYPE = "NOTIFICATION";')
-        for item in cursor.fetchall():
+        data = cursor.fetchall()
+        data.reverse()
+        for item in data:
             DATE,TIME,CAPTION = item
             html_text += f'<div id="notifi"><div id="noti_heading">DATE/TIME:- {DATE},{TIME}<div style="float: right;"><i class="fa fa-bell"></i></div></div><b>{CAPTION}</b></div>'
         funt.Functions().data_base_function(conn)

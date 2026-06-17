@@ -3,7 +3,13 @@ import functions as funt
 class content_creator:
     def __init__(self):
         super().__init__()
+    def subject_list(self,st_class):
+        c_type_dic = {"type1":"HINDI<E.V.S.<COMPUTER<ENGLISH<G.K.<MATHS<ART","type2":"HINDI<G.K.<E.V.S.<MATHS<SANSKRIT<ENGLISH<COMPUTER<ART",
+        "type3":"MATHS<SANSKRIT<COMPUTER<ENGLISH<E.V.S.<G.K.<HINDI<ART","type4":"ENGLISH<G.K.<SANSKRIT<S.ST<MATHS<HINDI<SCIENCE<COMPUTER"}
+        classes_dic = {"1":"type1","2":"type2","3":"type2","4":"type3","5":"type3","6":"type4","7":"type4","8":"type4"}
+        return c_type_dic[classes_dic[st_class]].split('<')
 
+class Complains(content_creator): 
     def admin_complain_code(self):
         html_text = ''
         conn,cursor = funt.Data().data_base_function()
@@ -19,21 +25,8 @@ class content_creator:
             html_text += f'<div id="notifi"><div id="noti_heading">USER ID :- {user}, USER TYPE :- {user_type}, DATE/TIME :- {d},{t}</div><b>COMPLAIN :- </b>{complain}</div>'
         return html_text + '\n<label><code><b>NOTE - </b>THESE COMPLAINS CONNOT WE DELETED.</code></label>'
     
-    def subject_list(self,st_class):
-        c_type_dic = {"type1":"HINDI<E.V.S.<COMPUTER<ENGLISH<G.K.<MATHS<ART","type2":"HINDI<G.K.<E.V.S.<MATHS<SANSKRIT<ENGLISH<COMPUTER<ART",
-        "type3":"MATHS<SANSKRIT<COMPUTER<ENGLISH<E.V.S.<G.K.<HINDI<ART","type4":"ENGLISH<G.K.<SANSKRIT<S.ST<MATHS<HINDI<SCIENCE<COMPUTER"}
-        classes_dic = {"1":"type1","2":"type2","3":"type2","4":"type3","5":"type3","6":"type4","7":"type4","8":"type4"}
-        return c_type_dic[classes_dic[st_class]].split('<')
-    
-    def test_ids_teacher(self,t_id,c_class):
-        html_text='<b>SELECT [TEST ID, CLASS, DATE/TIME, SUBJECT] <label>*</label></b><select id="nor_opt" name="test_id" required><option value="">---SELECT---</option>'
-        conn,cursor = funt.Data().data_base_function()
-        cursor.execute('SELECT TEST_ID,DATE,TIME,SUBJECT,CLASS FROM TEST_DATA WHERE T_ID = ? AND CLASS = ?',(t_id,c_class))
-        for item in cursor.fetchall():
-            html_text +=f'<option value="{int(item[0])}">{int(item[0])} --> {item[4]} -->{item[1]},{item[2]} --> {item[3]}</option>'
-        funt.Data().data_base_function(conn)
-        return html_text + '</select><button id="nor_btn">LOAD TEST DATA</button>'
-
+class Tests(content_creator):
+    #test content
     def option_field(self, da, num):
         html = f'<div id="TEST_CONTENT"><p>{da[0]}'
         html += f'<select id="nor_input" name="answer{num}">'
@@ -53,33 +46,7 @@ class content_creator:
     def long_field(self, da, num):
         opt_mar = da[1].split('<---MARKS--->')
         return f'<div id="TEST_CONTENT"><p>{da[0]}<textarea rows="5" id="nor_input" name="answer{num}" placeholder="ENTER YOUR ANSWER"</textarea>{opt_mar[0]}<div class="MARKS"><b>MARK: {opt_mar[1]}</b></p></div></div><br>'
-
-    def notifications_creater(self,da,noti_info):
-        noti_del = noti_info.split('//')
-        return f'{da[0]}<!--- ADD ALL THE HTML CONTENT HERE --->\n<div id="notifi"><div id="noti_heading">{noti_del[0]},{noti_del[1]}<div style="float: right;"><i class="fa fa-bell"></i></div></div>{noti_del[2]}</div>{da[1]}'
-        
-    def videos_creater(self,initial_html_list,path,caption,vid_date,vid_time):
-        return f'{initial_html_list[0]}<!--- ADD ALL THE HTML CONTENT HERE --->\n<div id="notifi"><div id="noti_heading">{vid_date},{vid_time}<div style="float: right;"><i class="fa fa-play"></i></div></div><video width="100%" src="{path}" controls></video>{caption}</div>{initial_html_list[1]}'
-
-    def hw_creator(self,st_class):
-        conn,cursor = funt.Data().data_base_function()
-        cursor.execute('SELECT HW_TEXT,HW_FILE_PATH,HW_DATE,HW_TIME,T_ID FROM HW_DATA WHERE HW_CLASS = ?;',(st_class,))
-        html_text = '<fieldset><h1>HOMEWORK</h1>'
-        for row in cursor.fetchall():
-            text,file,date,time,t_id = row
-            cursor.execute('SELECT Name FROM TEACHER_DATA WHERE ID = ?',(t_id,))
-            t_name = cursor.fetchone()[0]
-            html_text += f'<div id="notifi"><div id="noti_heading"><b>{date},{time}<br>TEACHER:- {t_name}</b><div style="float: right;"><i class="fa fa-book"></i></div></div><b>{text}</b>'
-            if file != None:
-                html_text += f'<br><a href="{file}" target="_blank"><button id="hw_btn">VIEW HOMEWORK  <i class="fa fa-file"></i></button></a>'
-            html_text += '</div>\n'
-        html_text += '</fieldset>'
-        funt.Data().data_base_function(conn)
-        return html_text
-   
-class Tests(content_creator):
-    def __init__(self):
-        super().__init__()
+    #test
     def generate_test_code(self,test_id):
         conn,cursor = funt.Data().data_base_function()
         cursor.execute('SELECT * FROM TEST_DATA WHERE TEST_ID = ?',(test_id,))
@@ -211,31 +178,53 @@ document.getElementById("'''+f'''testbtn{test_id}'''+'''").style.display = "none
         funt.Data().data_base_function(conn)
         return html_text + '</table><button id="nor_btn">SAVE DATA</button>'
 
-class Notifications(content_creator):
-    def __init__(self):
-        super().__init__()
-    def notification_code(self,noti_info):
-        with open('Templates/notifications.html','r') as f:
-            initial_html_text = f.read()
-        initial_html_list = initial_html_text.split('<!--- ADD ALL THE HTML CONTENT HERE --->')
-        return super().notifications_creater(initial_html_list,noti_info)
-
+    def test_ids_teacher(self,t_id,c_class):
+        html_text='<b>SELECT [TEST ID, CLASS, DATE/TIME, SUBJECT] <label>*</label></b><select id="nor_opt" name="test_id" required><option value="">---SELECT---</option>'
+        conn,cursor = funt.Data().data_base_function()
+        cursor.execute('SELECT TEST_ID,DATE,TIME,SUBJECT,CLASS FROM TEST_DATA WHERE T_ID = ? AND CLASS = ?',(t_id,c_class))
+        for item in cursor.fetchall():
+            html_text +=f'<option value="{int(item[0])}">{int(item[0])} --> {item[4]} -->{item[1]},{item[2]} --> {item[3]}</option>'
+        funt.Data().data_base_function(conn)
+        return html_text + '</select><button id="nor_btn">LOAD TEST DATA</button>'
+    
 class Videos_Sender(content_creator):
-    def __init__(self):
-        super().__init__()
-    def vid_code(self,path,caption,vid_date,vid_time):
-        if caption == None:
-            caption = ''
-        with open('Templates/videos.html','r') as f:
-            initial_html_text = f.read()
-        initial_html_list = initial_html_text.split('<!--- ADD ALL THE HTML CONTENT HERE --->')
-        return super().videos_creater(initial_html_list,path,caption,vid_date,vid_time)
+    def videos_creater(self,initial_html_list,path,caption,vid_date,vid_time):
+        html_text = ''
+        conn,cursor = funt.Functions().data_base_function()
+        cursor.execute('')
+        for item in cursor.fetchall():
+            html_text += f''
+        funt.Functions().data_base_function(conn)
+        return html_text
+    #     return f'{initial_html_list[0]}<!--- ADD ALL THE HTML CONTENT HERE --->\n<div id="notifi"><div id="noti_heading">{vid_date},{vid_time}<div style="float: right;"><i class="fa fa-play"></i></div></div><video width="100%" src="{path}" controls></video>{caption}</div>{initial_html_list[1]}'
+
+class Notifications(content_creator):
+    def notifications_creater(self):
+        html_text = ''
+        conn,cursor = funt.Functions().data_base_function()
+        cursor.execute('SELECT DATE,TIME,CAPTION FROM MEDIA_DATA WHERE MEDIA_TYPE = "NOTIFICATION";')
+        for item in cursor.fetchall():
+            DATE,TIME,CAPTION = item
+            html_text += f'<div id="notifi"><div id="noti_heading">DATE/TIME:- {DATE},{TIME}<div style="float: right;"><i class="fa fa-bell"></i></div></div><b>{CAPTION}</b></div>'
+        funt.Functions().data_base_function(conn)
+        return html_text
 
 class Homework(content_creator):
-    def __init__(self):
-        super().__init__()
     def hw_code(self,st_class):
-        return super().hw_creator(st_class)
+        conn,cursor = funt.Data().data_base_function()
+        cursor.execute('SELECT HW_TEXT,HW_FILE_PATH,HW_DATE,HW_TIME,T_ID FROM HW_DATA WHERE HW_CLASS = ?;',(st_class,))
+        html_text = '<fieldset><h1>HOMEWORK</h1>'
+        for row in cursor.fetchall():
+            text,file,date,time,t_id = row
+            cursor.execute('SELECT Name FROM TEACHER_DATA WHERE ID = ?',(t_id,))
+            t_name = cursor.fetchone()[0]
+            html_text += f'<div id="notifi"><div id="noti_heading"><b>{date},{time}<br>TEACHER:- {t_name}</b><div style="float: right;"><i class="fa fa-book"></i></div></div><b>{text}</b>'
+            if file != None:
+                html_text += f'<br><a href="{file}" target="_blank"><button id="hw_btn">VIEW HOMEWORK  <i class="fa fa-file"></i></button></a>'
+            html_text += '</div>\n'
+        html_text += '</fieldset>'
+        funt.Data().data_base_function(conn)
+        return html_text
 
 class Details_Page(content_creator):
     def __init__(self):

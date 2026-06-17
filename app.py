@@ -87,25 +87,24 @@ def logout():
     session.clear()
     return redirect(url_for('welcome_page'))
 
-@app.route('/notifications')
-def noti_view():
-    if log_check():
-        with open('Templates/notifications.html','r') as f:
-            return f.read()
-    else:
-        return redirect(url_for('welcome_page'))
-    
 @app.route('/confirmation',methods=['GET'])
 def confirmation():
     if log_check():
         return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('welcome_page'))
+    
+@app.route('/notifications')
+def noti_view():
+    if log_check():
+        return render_template('notifications.html',code=cc.Notifications().notifications_creater())
+    else:
+        return redirect(url_for('welcome_page'))
 
 @app.route('/videos')
 def videos():
     if log_check():
-        return render_template('videos.html')
+        return render_template('videos.html',code=cc.Videos_Sender().videos_creater())
     else:
         return redirect(url_for('welcome_page'))
 
@@ -209,7 +208,7 @@ def complains():
         <textarea id="nor_input" rows="5" placeholder="ENTER YOUR COMPLAIN........." name="complain" required></textarea>
         <button id="nor_btn">SUBMIT</button></form>''')
         elif session['role'] == 'ADMIN':
-            return render_template('complain.html',code=cc.content_creator().admin_complain_code())
+            return render_template('complain.html',code=cc.Complains().admin_complain_code())
     else:
         return redirect(url_for('welcome_page'))
 
@@ -324,7 +323,7 @@ def test_data_storage():
 def student_test_data():
     if log_check():
         if request.form.get('stage') == "st1":
-            return render_template('teacher/functions/test_data.html',opt_code=cc.content_creator().test_ids_teacher(int(session['user_id']),request.form.get('c_class')))
+            return render_template('teacher/functions/test_data.html',opt_code=cc.Tests().test_ids_teacher(int(session['user_id']),request.form.get('c_class')))
         if request.form.get('stage') == "st2":
             return render_template('teacher/functions/test_data.html',code=cc.Tests().teacher_test_checker(request.form.get('test_id')))
         if request.form.get('stage') == 'st3':
@@ -410,21 +409,16 @@ def online_classes_teacher():
 #ADMIN
 
 @app.route('/noti_sender',methods=['GET','POST'])
-def noti_load():
-    if log_check():
-        return render_template('admin/functions/notification_sender.html')
-    else:
-        return redirect(url_for('welcome_page'))
-
-@app.route("/noti_sender/noti_confirmation",methods=["POST","GET"])
 def noti_sender():
     if log_check():
-        d,t = funt.Functions().get_date_time()
-        noti_info = f'{str(d).replace('//','')}//{str(t).strip()[:-3].replace('//','')}//{request.form.get('noti').replace('//','')}'
-        noti_data = cc.Notifications().notification_code(noti_info)
-        with open('Templates/notifications.html','w') as f:
-            f.write(noti_data)
-        return render_template('confirmation.html')
+        if request.method == "POST":
+            d,t = funt.Functions().get_date_time()
+            conn,cursor = funt.Functions().data_base_function()
+            capt = request.form.get('noti').upper()
+            cursor.execute('INSERT INTO MEDIA_DATA(MEDIA_TYPE,DATE,TIME,CAPTION) VALUES(?,?,?,?)',('NOTIFICATION',d,str(t).strip()[:-3],capt))
+            funt.Functions().data_base_function(conn)
+            return render_template('confirmation.html')
+        return render_template('admin/functions/notification_sender.html')
     else:
         return redirect(url_for('welcome_page'))
 
@@ -432,17 +426,24 @@ def noti_sender():
 def admin_video_sender():
     if log_check():
         if request.method == "POST":
-            i = 1
-            while True:
-                if not os.path.exists(f'static/videos/video{i}.mp4'):
-                    break
-                i += 1
-            path = f"static/videos/video{i}.mp4"
+            # i = 1
+            # while True:
+            #     if not os.path.exists(f'static/videos/video{i}.mp4'):
+            #         break
+            #     i += 1
+            # path = f"static/videos/video{i}.mp4"
+            # video_ = request.files['video']
+            # video_.save(path)
+            # vid_data = cc.Videos_Sender().vid_code(path,request.form.get('video_caption'),request.form.get('video_date'),request.form.get('video_time'))
+            # with open('Templates/videos.html','w') as f:
+            #     f.write(vid_data)
+            
+            conn,cursor = funt.Functions().data_base_function()
             video_ = request.files['video']
-            video_.save(path)
-            vid_data = cc.Videos_Sender().vid_code(path,request.form.get('video_caption'),request.form.get('video_date'),request.form.get('video_time'))
-            with open('Templates/videos.html','w') as f:
-                f.write(vid_data)
+            capt = request.form.get('caption')
+            d,t = funt.Functions().get_date_time()
+            cursor.execute('INSERT INTO MEDIA_DATA VALUES(?,?,?,?,?)',('VIDEO',d,str(t).strip()[:-3],capt,video_))
+            funt.Functions().data_base_function(conn)
             return render_template('confirmation.html')
         return render_template('admin/functions/videos_sender.html')
     else:

@@ -292,7 +292,7 @@ class Online_classes(content_creator):
         cursor.execute(f'SELECT {li[i]} FROM ONLINE_CLASSES_DATA WHERE CLASS = ?',(c_class,))
         data = cursor.fetchone()
         if data is None:
-            for i in range(8):
+            for i in range(1,9):
                 html_text += f"""<tr><th>{time[i]}</th><td>SUBJECT<br><input type="text" value="" name="d{i+1}_1"><br>TEACHER ID<br><input type="number" value="" name="d{i+1}_2"><br>MEET ID<br><input type="text" value="" name="d{i+1}_3"></td></tr>"""
         else:
             for r in range(len(str(data[0].split(';')):

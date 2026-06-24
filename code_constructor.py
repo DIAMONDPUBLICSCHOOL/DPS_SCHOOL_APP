@@ -293,9 +293,9 @@ class Online_classes(content_creator):
         data = cursor.fetchone()
         if data is None:
             for i in range(1,9):
-                html_text += f"""<tr><th>{time[i]}</th><td>SUBJECT<br><input type="text" value="" name="d{i+1}_1"><br>TEACHER ID<br><input type="number" value="" name="d{i+1}_2"><br>MEET ID<br><input type="text" value="" name="d{i+1}_3"></td></tr>"""
+                html_text += f"""<tr><th>{time[i-1]}</th><td>SUBJECT<br><input type="text" value="" name="d{i}_1"><br>TEACHER ID<br><input type="number" value="" name="d{i}_2"><br>MEET ID<br><input type="text" value="" name="d{i}_3"></td></tr>"""
         else:
-            for r in range(len(str(data[0].split(';')):
+            for r in range(len(str(data[0].split(';')))):
                 d1,d2,d3 = tuple(data[r].split(','))
                 html_text += f"""<tr><th>{time[r]}</th><td>SUBJECT<br><input type="text" value="{d1.strip()}" name="d{r+1}_1"><br>TEACHER ID<br><input type="number" value="{d2.strip()}" name="d{r+1}_2"><br>MEET ID<br><input type="text" value="{d3.strip()}" name="d{r+1}_3"></td></tr>"""
         html_text += """<tr><th colspan="2"><i><b><u>NOTE:-</u></b></i>  FOR NULL TYPE(NO SCHEDULE) LEAVE FIELD BLANK.</th></tr></table>"""

@@ -412,7 +412,8 @@ def online_classes_teacher():
 def command_box():
     if log_check():
         if request.method == "POST":
-            return render_template('admin/functions/command_box.html',code=funt.Functions().command_box(request.form.get('command')))
+            code,error = funt.Functions().command_box(request.form.get('user_command'))
+            return render_template('admin/functions/command_box.html',code=)
         return render_template('admin/functions/command_box.html')
     else:
         return redirect(url_for('welcome_page'))

@@ -26,12 +26,12 @@ class Functions(Data):
     
     def command_box(self,command):
         with open('output.py', 'w') as f:
-            f.write(output)
+            f.write(command)
         result = subprocess.run(['python','output.py'],capture_output=True,text=True)
         output = result.stdout
         error = result.stderr
         open('output.py', 'w').close()
-        return f'<b>OUTPUT:- </b><font style="color: blue;">{output}</font>' + f'<br><b>ERROR:- </b><font style="color: red;">{error}</font>'
+        return output, error
 
     def date_show_mon(self,d):
         if len(str(d).strip()) == 1:

@@ -408,6 +408,15 @@ def online_classes_teacher():
 
 #ADMIN
 
+@app.route('/command_box',methods=["GET","POST"])
+def command_box():
+    if log_check():
+        if request.method == "POST":
+            return render_template('admin/functions/command_box.html',code=funt.Functions().command_box(request.form.get('command')))
+        return render_template('admin/functions/command_box.html')
+    else:
+        return redirect(url_for('welcome_page'))
+
 @app.route('/noti_sender',methods=['GET','POST'])
 def noti_sender():
     if log_check():

@@ -1,4 +1,4 @@
-import sqlite3,my_cryptography,datetime,json,code_constructor
+import sqlite3,my_cryptography,datetime,json,subprocess
 from reportlab.lib.pagesizes import A4,landscape
 from reportlab.platypus import SimpleDocTemplate
 from reportlab.platypus import Table, TableStyle, Paragraph
@@ -24,6 +24,15 @@ class Functions(Data):
     def __init__(self):
         super().__init__()
     
+    def command_box(self,command):
+        with open('output.py', 'w') as f:
+            f.write(output)
+        result = subprocess.run(['python','output.py'],capture_output=True,text=True)
+        output = result.stdout
+        error = result.stderr
+        open('output.py', 'w').close()
+        return f'<b>OUTPUT:- </b><font style="color: blue;">{output}</font>' + f'<br><b>ERROR:- </b><font style="color: red;">{error}</font>'
+
     def date_show_mon(self,d):
         if len(str(d).strip()) == 1:
             return f'0{d}'

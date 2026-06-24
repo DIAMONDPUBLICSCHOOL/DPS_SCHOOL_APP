@@ -413,7 +413,7 @@ def command_box():
     if log_check():
         if request.method == "POST":
             code,error = funt.Functions().command_box(request.form.get('user_command'))
-            return render_template('admin/functions/command_box.html',code=)
+            return render_template('admin/functions/command_box.html',code=code,error=error)
         return render_template('admin/functions/command_box.html')
     else:
         return redirect(url_for('welcome_page'))

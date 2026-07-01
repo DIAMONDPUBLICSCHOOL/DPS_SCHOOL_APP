@@ -30,7 +30,14 @@ class Functions(Data):
         result = subprocess.run(['python','output.py'],capture_output=True,text=True)
         output = result.stdout
         error = result.stderr
+        with open('com_history.json','r') as f:
+            li = json.load(f)
+        li_list = [int(num) for num in li.keys() if num.isdigit()]
+        num = max(li_list) if li_list else 0
+        li[num+1] = {"command": command, "output": output, "error": error}
         open('output.py', 'w').close()
+        with open('com_history.json', 'w') as f:
+            json.dump(li,f,indent=4)
         return output, error
 
     def date_show_mon(self,d):

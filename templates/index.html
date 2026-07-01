@@ -19,16 +19,16 @@
             <h1>DIAMOND PUBLIC SCHOOL</h1>
             <h2>LOGIN PAGE</h2>
             <label id="error">{{error|safe}}</label><br>
-            ENTER LOGIN TYPE <label>*</label>
+            <b>CHOOSE LOGIN TYPE <label>*</label></b>
             <select id="nor_opt" name="LOG_TYPE">
                 <option value="">--SELECT--</option>
                 <option value="STUDENT">STUDENT</option>
                 <option value="TEACHER">TEACHER</option>
                 <option value="ADMIN">ADMIN [FERNET MODE]</option>
             </select>
-            ENTER USERNAME <label>*</label>
+            <b>ENTER USERNAME <label>*</label></b>
             <input type="number" id="nor_input" name="USER_NAME" placeholder="ENTER YOUR USERNAME">
-            ENTER PASSWORD <label>*</label>
+            <b>ENTER PASSWORD <label>*</label></b>
             <input type="password" id="nor_input" name="PWD" placeholder="ENTER YOUR PASSWORD">
         </form>
         <button onclick="run()" type="submit" id="nor_btn"><b>LOGIN <i class="fa fa-sign-in"></i></b></button>

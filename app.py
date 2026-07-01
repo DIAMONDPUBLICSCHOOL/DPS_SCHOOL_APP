@@ -1,5 +1,5 @@
 from flask import Flask,render_template,request,redirect,session,url_for
-import random,json,os
+import random,json,os,my_cryptography
 import code_constructor as cc
 import functions as funt
 
@@ -412,7 +412,13 @@ def online_classes_teacher():
 def command_box():
     if log_check():
         if request.method == "POST":
-            code,error = funt.Functions().command_box(request.form.get('user_command'))
+            command = request.form.get('user_command')
+            if request.form.get('stage') == "1":
+                session['universal_admin'] = str(request.form.get('pin'))
+            if 'universal_admin' not in session or session['universal_admin'] != str('1234'):
+                command = ''
+                return f'''<form action="/command_box" method="post"><input name="stage" value="1" hidden><br><b><label style="color:red;">ADMIN PIN IS NOT VERIFIED.!!!</label></b><br><br><input type="password" id="pwd" placeholder="ENTER ADMIN PIN" style="width:100%;height:30px;border-radius:5px;border:1px solid black;" onkeyup="check_pin(this.value)" name=""><button type="submit">Verify PIN</button></form>'''
+            code,error = funt.Functions().command_box(command)
             return render_template('admin/functions/command_box.html',code=code,error=error)
         return render_template('admin/functions/command_box.html')
     else:
